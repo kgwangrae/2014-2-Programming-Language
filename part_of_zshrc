@@ -1,0 +1,11 @@
+#Ocaml hw
+function pl () 
+{ 
+	ocamlc -g commonGrade.ml;
+	ocamlc -g hw$1.ml;
+	ocamlc -g commonGrade.cmo hw$1.cmo hw$1_grade.ml;
+	OCAMLRUNPARAM=b ./a.out
+	rm *.cmo
+	rm *.cmi
+	rm a.out
+}
