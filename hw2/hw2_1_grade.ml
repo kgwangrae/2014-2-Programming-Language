@@ -1,5 +1,5 @@
 open CommonGrade
-open Hw1_4
+open Hw2_1
 
 let _ = output (fun() ->
 checkMetro (STATION "c")

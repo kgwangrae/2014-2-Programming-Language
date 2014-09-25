@@ -1,4 +1,4 @@
-open Hw2_4.Zexpr
+open Hw2_6.Zexpr
 open CommonGrade
 
 let (|>) g f = f g

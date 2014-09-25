@@ -1,5 +1,5 @@
 open CommonGrade
-open Hw2_1
+open Hw2_4
 
 let equals v1 v2 = (abs_float (v1 -. v2)) <= 0.1
 
