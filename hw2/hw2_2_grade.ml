@@ -88,3 +88,12 @@ let t9 = merge (t8, insert (0, merge (EMPTY, EMPTY))) in
 (findMin t9,findMin (deleteMin t9)) (* 0,1 *)
 = (0, 1)
 )
+
+
+let myHeap = insert(3, insert(1, insert(2, insert(7, insert(6, insert(4, insert(5, EMPTY))))))) 
+let _ = output (fun() -> (rank(myHeap)=1)) 
+let  _ = output (fun() -> (findMin(myHeap)=1)) 
+
+let myHeap2 = deleteMin(myHeap) 
+let _ = output (fun() ->(rank(myHeap2)=1)) 
+let _ = output (fun() ->( findMin(myHeap2)=2))

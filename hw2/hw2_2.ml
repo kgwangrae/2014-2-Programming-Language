@@ -7,7 +7,7 @@ and value = int
 exception EmptyHeap
 let rank : heap -> rank =  
   fun h -> match h with 
-  | EMPTY -> 0
+  | EMPTY -> -1
   | NODE (r,_,_,_) -> r
 let shake : value * heap * heap -> heap = 
   fun (v, lh, rh) ->

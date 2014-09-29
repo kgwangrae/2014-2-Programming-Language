@@ -5,18 +5,17 @@ let equals v1 v2 = (abs_float (v1 -. v2)) <= 0.1
 
 let test t answer:bool =
   let v = galculator t in
-  let _ = print_float v in
+  (*let _ = print_float v in
   let _ = print_char ' ' in 
   let _ = print_float answer in
-  let _ = print_newline() in
-  equals v answer
+  let _ = print_newline() in*)
+  (equals v answer);;
 
-(* 
-galculator X
-
-Exception
-
- *)
+let _ = output (fun() ->
+    let tE = X in
+    try (test tE 0.0)
+    with Hw2_4.FreeVariable -> true
+)
 
 let _ = output (fun() ->
     let t0 = INT 4 in
@@ -73,6 +72,10 @@ let t7 = SIGMA (INT 1, INT 10, X) in
 test t7 55.0
 )
 
+let _ = output (fun() ->
+let t7 = SIGMA (INT 1, INT 10, (MUL (INT (-1), X))) in
+test t7 (-55.0)
+)
 
 
 let _ = output (fun() ->
@@ -80,14 +83,18 @@ let t8 = INTEGRAL(INT 0, INT 10, INT 20) in
 test t8 200.
 )
 
+let _ = output (fun() ->
+let t8 = INTEGRAL(INT 10, INT 0, INT 20) in
+test t8 (-200.)
+)
 
 
-(* 
-galculator (ADD (INT 1, X))
+let _ = output (fun() ->
+    let tE = (ADD (INT 1, X)) in
+    try (test tE 0.0)
+    with Hw2_4.FreeVariable -> true
+)
 
-(*Exception*)
-
- *)
 let _ = output (fun() ->
 test (INTEGRAL (REAL 1.3, REAL 1.41,
             SIGMA (INT 1, INT 1, X))) 0.1
@@ -108,10 +115,11 @@ test t12 35.0
 )
 
 
-(* 
-galculator (SIGMA (INT 1, X, INTEGRAL (X, X, SIGMA (X, ADD (X, INT 1), X))))
-
-(*Exception*) *)
+let _ = output (fun() ->
+    let tE = (SIGMA (INT 1, X, INTEGRAL (X, X, SIGMA (X, ADD (X, INT 1), X)))) in
+    try (test tE 0.0)
+    with Hw2_4.FreeVariable -> true
+)
 
 
 let _ = output (fun() ->
@@ -120,6 +128,10 @@ test t14 45.0
 )
 
 
+let _ = output (fun() ->
+let t14 = SIGMA (INT 0, INT 10, SIGMA (X, ADD(X, INT 10), INT 3)) in
+test t14 363.0
+)
 
 let _ = output (fun() ->
 let t15 = INTEGRAL (ADD (INT 1, REAL 0.11), INT 1, X) in
@@ -134,16 +146,24 @@ test t16 0.0
 )
 
 
+let _ = output (fun() ->
+    let tE = (ADD (SIGMA (INT 1, INT 5, X), SIGMA (X, INT 5, SUB (INT 0, X)))) in
+    try (test tE 0.0)
+    with Hw2_4.FreeVariable -> true
+)
 
-(* 
-galculator (ADD (SIGMA (INT 1, INT 5, X), SIGMA (X, INT 5, SUB (INT 0, X))))
-
-(*Exception*)
- *)
 
 let _ = output (fun() ->
 let t18 = SIGMA (SIGMA (INT 1, INT 1, X), SIGMA (INT 3, INT 3, X), SIGMA (INT 5, INT 5, X)) in
 test t18 15.0
 )
 
+(*let _ = output (fun() ->
+    let t19 = (INTEGRAL(INT 0, INT 100000, DIV (SUB(MUL(INT 16, DIV(X, INT 100000)), INT 16),ADD(SUB(MUL(MUL(DIV(X, INT 100000),DIV(X, INT 100000)),MUL(DIV(X, INT 100000),DIV(X, INT 100000))), MUL(MUL(INT 2,DIV(X, INT 100000)),MUL(DIV(X, INT 100000),DIV(X, INT 100000)))) , SUB(MUL(INT 4, DIV(X, INT 100000)), INT 4) ) ) )) in
+    test t19 314159.46535597858
+)*)
 
+(*let _ = output (fun() ->
+let t20 = (SIGMA(INT 1, INT 1000000, DIV(INT 8, MUL(SUB(MUL(INT 2, X), INT 1),SUB(MUL(INT 2, X), INT 1))))) in
+test t20 9.86960240108985332 
+)*)

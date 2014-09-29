@@ -1,4 +1,4 @@
-exception InvalidExpression
+exception FreeVariable
 
 type exp =
   | X
@@ -17,7 +17,7 @@ type exp =
 let rec calculator : exp -> exp -> float = 
   fun currX e -> match e with 
   | X -> (match currX with
-        | X -> raise InvalidExpression
+        | X -> raise FreeVariable
         | _ -> (calculator X currX))
   | INT i -> float_of_int i
   | REAL f -> f
@@ -26,19 +26,18 @@ let rec calculator : exp -> exp -> float =
   | MUL (e1, e2) -> (calculator currX e1)*.(calculator currX e2)
   | DIV (e1, e2) -> (calculator currX e1)/.(calculator currX e2)
   | SIGMA (fromX, toX, e_in) -> 
-     let fromXCalculated = (calculator currX fromX) 
+     let fromXCalculated = int_of_float (calculator currX fromX) 
      in
-     let toXCalculated = (calculator currX toX) 
+     let toXCalculated = int_of_float (calculator currX toX) 
      in
-     let calWithX = (calculator (REAL fromXCalculated))
+     let calWithX = (calculator (INT fromXCalculated))
      in
      let calWithOutX = (calculator currX)
      in 
      if (fromXCalculated > toXCalculated) 
-       then raise InvalidExpression
-     else if (abs_float (fromXCalculated-.toXCalculated)) < 0.1
-       then (calWithX e_in)  
-     else (calWithX e_in) +. (calWithOutX (SIGMA (REAL (fromXCalculated+.1.0),(REAL toXCalculated), e_in)))
+       then 0.0
+     else if (fromXCalculated=toXCalculated) then (calWithX e_in)  
+     else (calWithX e_in) +. (calWithOutX (SIGMA (INT (fromXCalculated+1),(INT toXCalculated), e_in)))
   | INTEGRAL (fromX, toX, e_in) -> 
      let fromXCalculated = (calculator currX fromX) 
      in
