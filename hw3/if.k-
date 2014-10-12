@@ -1,0 +1,12 @@
+(* simple *)
+
+let x := 0 in
+read x;
+if (x = 1) 
+then (write (3 + 1))
+else (
+	if true
+	then (write (4 - 1))
+	else (5 < 0)
+)
+

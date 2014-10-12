@@ -1,0 +1,21 @@
+let proc f(x,y,z) = (write x; write y; write z) in
+f(1,2,3);
+{};
+write ({x:=1,y:=2}).y;
+(*result above : 1232 *)
+
+let r := {x:=1,y:=2} in
+let r_tmp := r in
+let r2 := (r_tmp.y:=-100;r_tmp) in
+(if (r=r2) then (write -111)
+	else ((if ({}=()) then (write 999)
+			else (write 111));
+	(*result above : 999*)
+	write (r.x);
+	write (r.y);
+	write (r_tmp.x);
+	write (r_tmp.y);
+	write (r2.x);
+	write (r2.y))
+	(*result above :1-1001-1001-100*)
+)

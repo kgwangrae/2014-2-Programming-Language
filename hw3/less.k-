@@ -1,0 +1,12 @@
+(* less *)
+let x:=5 in 
+let y:=1 in
+if not ((x/y) < 5) 
+then (
+	x:={};
+	y:={a:=1,b:=2,c:=3}; 
+	y.a := y.c;
+	y.a := y.b;
+	write y.a
+)
+else (x; write x)
