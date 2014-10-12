@@ -1,0 +1,76 @@
+(* Queue and stack implementation *)
+let proc revStack (src,dest) = 
+(
+ if (src=()) then dest 
+ else (revStack (src.stk, {top:=(src.top),stk:=dest}))
+) 
+in
+let emptyQueue := {l:=(),r:=()} in
+let proc enq (elem, q) = ({l:=(q.l),r:={top:=elem,stk:=(q.r)}}) in
+let proc deq (q) = 
+(
+ let left := (q.l) in
+ if (left=()) then 
+ (
+  let right := (q.r) in
+  if (right=()) then {v:=(),queue:={l:=(),r:=()}}
+  else 
+  (
+    let newLeft := (revStack (right,())) in
+	{v:=(newLeft.top),queue:=({l:=(newLeft.stk),r:=()})}
+  )
+ )
+ else {v:=(left.top),queue:=({l:=(left.stk),r:=(q.r)})}
+)
+in
+(*
+ type tree =
+ | empty of int
+ | pseudoEmpty of int
+ | node of int * tree * tree (leaf : int * pseudoEmpty * pseudoEmpty)
+ NOTE : distinguished leaves and nodes to comply with specifications.
+*)
+
+let empty := 0 in
+let pseudoEmpty := -1 in 
+(* NOTE : pseudoEmpty tree is not an empty tree. *)
+let proc isEmpty (tr) = (tr=empty) in 
+let proc isTotallyEmpty (tr) = (if (tr=empty) then true 
+							  else if (tr=pseudoEmpty) then true
+						      else false) in
+
+(* Can't handle exceptions, no type checking, no safe way to distinguish int and record *) 
+let proc makeLtree (rootN, lSubTr) = {v:=rootN,l:=lSubTr,r:=empty} in 
+let proc makeRtree (rootN, rSubTr) = {v:=rootN,l:=empty,r:=rSubTr} in 
+let proc makeTree (rootN, lSubTr, rSubTr) = {v:=rootN,l:=lSubTr,r:=rSubTr} in
+let proc leaf (n) = (makeTree (n, pseudoEmpty, pseudoEmpty)) in
+
+let proc rTree (tr) = (tr.r) in
+let proc lTree (tr) = (tr.l) in
+let proc nodeVal (tr) = (tr.v) in
+let proc dft (tr) = (* preorder traversal *)
+(
+ if (isTotallyEmpty(tr)) then () else (
+ write (tr.v);
+ if (isTotallyEmpty(tr.l)) then () else (dft (tr.l));
+ if (isTotallyEmpty(tr.r)) then () else (dft (tr.r));
+ ())
+) 
+in 
+let proc mybft (q) = (* Breadth First Traversal : from left to right *)
+(
+ let tr_record := deq(q) in
+ if (tr_record.v=()) then () else (
+ let q_in := tr_record.queue in 
+ let curr_tr := tr_record.v in
+ (if (isTotallyEmpty(curr_tr)) 
+ 	then (mybft (q_in)) 
+	else (
+		write (curr_tr.v);
+		mybft (enq(curr_tr.r,enq(curr_tr.l,q_in)))
+ )))
+)
+in
+let proc bft (tr) = (mybft (enq(tr,emptyQueue)))
+in
+

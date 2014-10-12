@@ -1,0 +1,3 @@
+(* leaf + nodeval *)
+let lf := leaf (2) in
+write (nodeVal (lf))

@@ -1,0 +1,4 @@
+(* makeLtree + rTree + isEmpty *)
+let tr := makeLtree (1, (leaf (2))) in
+let lf := rTree(tr) in
+if isEmpty(lf) then write (1) else write (0)

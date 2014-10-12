@@ -1,0 +1,125 @@
+(* Queue and stack implementation *)
+let proc revStack (src,dest) = 
+(
+ if (src=()) then dest 
+ else (revStack (src.stk, {top:=(src.top),stk:=dest}))
+) 
+in
+let emptyQueue := {l:=(),r:=()} in
+let proc enq (elem, q) = ({l:=(q.l),r:={top:=elem,stk:=(q.r)}}) in
+let proc deq (q) = 
+(
+ let left := (q.l) in
+ if (left=()) then 
+ (
+  let right := (q.r) in
+  if (right=()) then {v:=(),queue:={l:=(),r:=()}}
+  else 
+  (
+    let newLeft := (revStack (right,())) in
+	{v:=(newLeft.top),queue:=({l:=(newLeft.stk),r:=()})}
+  )
+ )
+ else {v:=(left.top),queue:=({l:=(left.stk),r:=(q.r)})}
+)
+in
+(*
+write(deq(enq(3,enq(2,enq(1,emptyQueue)))).v);
+write(deq(deq(enq(3,enq(2,enq(1,emptyQueue)))).queue).v);
+write(deq(deq(deq(enq(3,enq(2,enq(1,emptyQueue)))).queue).queue).v);
+*)
+(*
+ type tree =
+ | empty of int
+ | pseudoEmpty of int
+ | node of int * tree * tree (leaf : int * pseudoEmpty * pseudoEmpty)
+ NOTE : distinguished leaves and nodes to comply with specifications.
+ NOTE : records only have pointers inside, therefore using it repeatedly may cause some side effects.
+*)
+
+let empty := 0 in
+let pseudoEmpty := -1 in 
+(* NOTE : pseudoEmpty tree is not an empty tree. *)
+let proc isEmpty (tr) = (tr=empty) in 
+let proc isTotallyEmpty (tr) = (if (tr=empty) then true 
+							  else if (tr=pseudoEmpty) then true
+						      else false) in
+
+(* Can't handle exceptions, no type checking, no safe way to distinguish int and record *) 
+let proc makeLtree (rootN, lSubTr) = {v:=rootN,l:=lSubTr,r:=empty} in 
+let proc makeRtree (rootN, rSubTr) = {v:=rootN,l:=empty,r:=rSubTr} in 
+let proc makeTree (rootN, lSubTr, rSubTr) = {v:=rootN,l:=lSubTr,r:=rSubTr} in
+let proc leaf (n) = (makeTree (n, pseudoEmpty, pseudoEmpty)) in
+
+let proc rTree (tr) = (tr.r) in
+let proc lTree (tr) = (tr.l) in
+let proc nodeVal (tr) = (tr.v) in
+let proc dft (tr) = (* preorder traversal *)
+(
+ if (isTotallyEmpty(tr)) then () else (
+ write (tr.v);
+ if (isTotallyEmpty(tr.l)) then () else (dft (tr.l));
+ if (isTotallyEmpty(tr.r)) then () else (dft (tr.r));
+ ())
+) 
+in 
+let proc mybft (q) = (* Breadth First Traversal : from left to right *)
+(
+ let tr_record := deq(q) in
+ if (tr_record.v=()) then () else (
+ let q_in := tr_record.queue in 
+ let curr_tr := tr_record.v in
+ (if (isTotallyEmpty(curr_tr)) 
+ 	then (mybft (q_in)) 
+	else (
+		write (curr_tr.v);
+		mybft (enq(curr_tr.r,enq(curr_tr.l,q_in)))
+ )))
+)
+in
+let proc bft (tr) = (mybft (enq(tr,emptyQueue)))
+in
+let tree1 := makeTree (1, leaf(3), makeLtree(-1,leaf(2))) in
+let tree2 := makeTree (4, leaf(5), makeRtree(6,leaf(7))) in
+let tree3 := makeTree (0, tree1, tree2) in
+let tree4 := makeTree (7777, tree3, tree3) in
+((*dft (tree3); bft(tree3); dft(tree4);bft(tree4); (*013-1245670143-156277777013-124567013-12456777770014143-1563-1562727*)*)
+
+ 
+(* bft : tr5 *)
+let t6 := leaf (7) in
+let t5 := makeLtree (6, t6) in
+let t2 := makeLtree (5, t5) in
+let t4 := leaf (4) in
+let t3 := makeRtree (2, leaf (3)) in
+let t1 := makeTree (1, t3, t4) in
+let t0 := makeTree (0, t1, t2) in
+bft (t0)
+;
+(* dft : tr4 *)
+let t6 := leaf (7) in
+let t5 := makeLtree (6, t6) in
+let t2 := makeLtree (5, t5) in
+let t4 := leaf (4) in
+let t3 := makeRtree (2, leaf (3)) in
+let t1 := makeTree (1, t3, t4) in
+let t0 := makeTree (0, t1, t2) in
+dft (t0)
+;
+(* tr3: makeRtree + rTree + nodeVal *)
+let tr := makeRtree (1, (leaf (2))) in
+let lf := rTree (tr) in
+write ((nodeVal (tr)) + (nodeVal (lf)))
+;
+(* tr2: makeLtree + rTree + isEmpty *)
+let tr := makeLtree (1, (leaf (2))) in
+let lf := rTree(tr) in
+if isEmpty(lf) then write (1) else write (0)
+;
+(* tr1: leaf + nodeval *)
+let lf := leaf (2) in
+write (nodeVal (lf))
+
+(*0152463701234567312*)
+ 
+)

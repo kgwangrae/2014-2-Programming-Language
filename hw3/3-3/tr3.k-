@@ -1,0 +1,4 @@
+(* makeRtree + rTree + nodeVal *)
+let tr := makeRtree (1, (leaf (2))) in
+let lf := rTree (tr) in
+write ((nodeVal (tr)) + (nodeVal (lf)))

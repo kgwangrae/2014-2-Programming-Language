@@ -1,0 +1,2 @@
+(* Empty record *)
+if (not ({} = unit)) then (write 0) else (write 1)

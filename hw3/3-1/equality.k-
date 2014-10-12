@@ -1,0 +1,12 @@
+let proc test (v) = (if (v) then (write 1) else (write 0)) in (
+	test (1=1);
+	test (1=2);
+	test (false=false);
+	test (false=2);
+	test ({x:=1}={x:=1});
+	test ({x:=1}=false);
+	test ((1+1)=2);
+	test (()={})
+)
+
+(* result : 10100011 *)

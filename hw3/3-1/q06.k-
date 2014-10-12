@@ -1,0 +1,2 @@
+(* Field access *)
+write ( {fst := true, snd := 3 } ).snd
