@@ -1,8 +1,53 @@
 open Hw4_2
 
-let comp = fun (a,b) -> if(a=b) then (print_endline "GOOD") else (print_endline "BAD")
+let comp = fun (a,b) -> if(a=b) then (print_endline "O") else (print_endline "X")
+;;
+let rec list_equal : key list -> key list -> bool = fun a b -> match a with
+  | h::t -> 
+      let len_a = List.length a in
+      let len = List.length b in
+      if (len_a = len) then (
+      let lst = (List.filter (fun x -> (not (x=h))) b) in
+      let len2 = List.length lst in
+      (len = (len2+1)) && (list_equal t lst))
+      else false
+  | [] -> true
+;;
+
+
+comp((list_equal (getReady (Branch (End (NameBox "1"), Guide ("2", Guide ("2", Branch (Branch (End (NameBox "2"), Guide ("3", Branch (Guide ("3", Guide ("3", End (NameBox "3"))), Branch (Guide ("4", Branch (End (NameBox "4"), End (NameBox "5"))), End (NameBox "6"))))), Guide ("7", End (NameBox "7"))))))))  [Bar; Node (Bar, Bar); 
+Node (Node (Bar, Node (Bar, Bar)), Node (Node (Bar, Bar), Bar)); 
+Node 
+(Node (Node (Node (Bar, Node (Bar, Bar)), Node (Node (Bar, Bar), Bar)), 
+Node (Node (Node (Bar, Node (Bar, Bar)), Node (Node (Bar, Bar), Bar)), 
+Bar)), 
+Bar)]), true)
 
 ;;
+
+comp((list_equal (getReady (Guide ("1", Branch (Branch (Branch (Branch (Guide ("2", Branch (Guide ("1", Guide ("1", End (NameBox "1"))), Guide ("3", Guide ("2", Guide ("3", Branch (End (NameBox "2"), Guide ("3", Guide ("3", Guide ("3", End (NameBox "3")))))))))), End (NameBox "4")), Branch (End (NameBox "5"), Branch (Guide ("6", Guide ("6", End (NameBox "6"))), End (NameBox "7")))), Guide ("8", End (NameBox "8"))), End (NameBox "9"))) )) ([Bar; Node (Bar, Bar); 
+Node (Node (Bar, Bar), 
+Node (Node (Bar, Bar), 
+Node 
+(Node 
+(Node (Node (Bar, Bar), 
+Node (Node (Bar, Bar), Node (Node (Bar, Bar), Node (Bar, Bar)))), 
+Bar), 
+Node (Node (Bar, Bar), Bar)))); 
+Node (Node (Bar, Bar), 
+Node 
+(Node 
+(Node (Node (Bar, Bar), 
+Node (Node (Bar, Bar), Node (Node (Bar, Bar), Node (Bar, Bar)))), 
+Bar), 
+Node (Node (Bar, Bar), Bar))); 
+Node 
+(Node (Node (Bar, Bar), 
+Node (Node (Bar, Bar), Node (Node (Bar, Bar), Node (Bar, Bar)))), 
+Bar)])), true)
+;;
+
+
 let exactly_has_one e l =
     (List.mem e l) && ((List.length l) = 1)
 
@@ -30,6 +75,12 @@ try(let _ = getReady(Guide ("1", Guide ("1", Branch (End (StarBox), Guide ("1", 
 with IMPOSSIBLE -> comp (true, true)
 ;;
 
+comp((list_equal (getReady (Branch (Guide ("1", Guide ("1", Branch (End (NameBox "1"), End (StarBox)))), End (NameBox "2")) )) ([Bar; Node (Bar, Bar)] )), true)
+;;
+comp((list_equal (getReady (Guide ("1", Branch (Guide ("1", End (NameBox "1")), End (StarBox))) )) ([Bar])), true)
+;;
+comp((list_equal (getReady (Guide ("1", Branch (Branch (End (NameBox "1"), End (StarBox)), Guide ("2", End (NameBox "2")))) )) ([Bar; Node (Bar, Node (Node (Bar, Bar), Bar))])), true)
+;;
 
 let a = End (NameBox "x");;
 let s = End (StarBox);;
@@ -88,6 +139,10 @@ let f = Branch (e, s);;
 
 (*15*)
 try comp((let _ = getReady (f) in true),false)
+with IMPOSSIBLE -> comp (true, true);;
+
+(*15*)
+try comp((let _ = getReady (Branch(b,b)) in true),false)
 with IMPOSSIBLE -> comp (true, true);;
 
 (*1*)
