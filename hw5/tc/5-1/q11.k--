@@ -1,0 +1,2 @@
+(* Double-write *)
+write (write 3)

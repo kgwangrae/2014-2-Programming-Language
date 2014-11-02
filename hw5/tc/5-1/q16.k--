@@ -1,0 +1,6 @@
+(* Arguments in CallF *)
+let x := 1 in
+let y := 2 in
+let z := 3 in
+let proc f (x) = x + y + z in
+write (f ( x := x + 1 ))

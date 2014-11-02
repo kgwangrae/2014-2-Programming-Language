@@ -1,0 +1,37 @@
+SNU 4190.310 Programming Languages (Fall 2014)
+
+Lambda Calculus
+
+컴파일 및 실행 방법
+===================
+[UNIX]
+
+  1. make
+  2. ./run examples/test.l 
+
+[WINDOWS]
+  
+  1. make.bat
+  2. run.exe examples/test.l
+
+TIP.
+실행시, 파일명을 명시하지 않을 경우, 표준입력으로부터 실행코드를 읽어들입니다.
+표준 입력으로 프로그램을 입력하신 후, 첫 번째 칸(column)에서
+유닉스 머신에서는 Ctrl-D, 윈도우 환경에서는 Ctrl-Z를 누르시면 
+프로그램이 실행됩니다.
+
+
+숙제 제출 방법
+==============
+evaluate.ml 파일에 있는 reduce 함수를 완성하시고 그 파일만 제출해 주세요.
+
+실행
+==============
+'./run examples/test.l' 을 실행하시면 입력파일을 파싱한 결과와 
+normal-order reduction을 적용한  결과를 같이 보여줍니다.
+
+테스트용 프로그램을 만드실 때는 괄호를 잘 이용하시기 바랍니다.
+
+--
+허기홍 <khheo@ropas.snu.ac.kr>
+조성근 <skcho@ropas.snu.ac.kr>

@@ -15,6 +15,10 @@ let rec list_equal : key list -> key list -> bool = fun a b -> match a with
 ;;
 
 
+try(let _ = (getReady (Branch(Branch(Branch(Branch(End (NameBox "a"), End(NameBox "b")), End(NameBox "c")),Branch(Branch(End (NameBox "d"), End(NameBox "e")), End(NameBox "f"))),Branch(End (NameBox "a"), End StarBox))) ) in comp(true,false))
+with IMPOSSIBLE -> comp (true,true);;
+
+
 comp((list_equal (getReady (Branch (End (NameBox "1"), Guide ("2", Guide ("2", Branch (Branch (End (NameBox "2"), Guide ("3", Branch (Guide ("3", Guide ("3", End (NameBox "3"))), Branch (Guide ("4", Branch (End (NameBox "4"), End (NameBox "5"))), End (NameBox "6"))))), Guide ("7", End (NameBox "7"))))))))  [Bar; Node (Bar, Bar); 
 Node (Node (Bar, Node (Bar, Bar)), Node (Node (Bar, Bar), Bar)); 
 Node 

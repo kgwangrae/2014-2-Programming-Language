@@ -1,0 +1,6 @@
+(* Arguments in CallR *)
+let x := 1 in
+let y := 2 in
+let z := 3 in
+let proc f (x) = (x := x + (y := y + 1) + (z := z + 1)) in
+f <x>; (write (x+y+z))

@@ -1,0 +1,11 @@
+(* FOR loop case II *)
+
+let x := 1; y := 1 in
+let sum := 0 in
+
+for x := 1 to 10 do (
+  for y := 1 to x do (
+    sum := sum + y
+  )
+);
+(write sum)

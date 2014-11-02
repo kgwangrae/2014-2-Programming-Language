@@ -1,0 +1,38 @@
+let i:=0 in 
+let j:=0 in 
+let k:=0 in 
+let max:=4 in 
+
+for i:=1 to   max do ( 
+   for j:=1 to i do ( 
+      let v:=1 in 
+         for k:=1 to i do ( 
+            if k<j then 
+               v:=v*10 
+            else 
+               v:=v*10+k 
+         ); 
+         for k:=1 to i-1 do ( 
+            if j<(i-k+1) then 
+               v:=v*10+(i-k) 
+            else 
+               v:=v*10 
+             
+         ); 
+         v:=v*10+1;       
+         write v 
+   ) 
+) 
+
+(* result 
+111 
+11211 
+10201 
+1123211 
+1023201 
+1003001 
+112343211 
+102343201 
+100343001 
+100040001 
+*)

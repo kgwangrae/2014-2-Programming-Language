@@ -1,0 +1,6 @@
+(* Assignment in FOR loop *)
+let x := 1; sum := 0 in
+for x := 1 to 10 do (
+  x := 2 * x;
+  sum := sum + x
+); (write sum)

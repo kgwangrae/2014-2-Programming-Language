@@ -1,0 +1,143 @@
+
+(* 
+
+	xenosoz - match.k- : 성냥개비 가져가기. (.)
+
+	@Author : Hwang, Tai-Hyun
+	@Date : 2005. 10. 05. Wed.
+	@Compatibility : "K - 실행기 I"
+
+
+	(*
+		note 1.
+
+		아직 우리가 만든 인터프리터가 어려서 숫자밖에 읽고 쓰질 못하네요 ...
+		그래서 k-가 문자열을 읽고 쓸 수 있을때까지 당분간은 숫자로 된 세상에
+		우리가 적응해 주는 수 밖에요.
+	*)
+
+	(*
+	 	note 2.
+
+		컴퓨터와 할 수 있는 성냥개비 가져가기 게임입니다.
+		마지막 성냥을 가져가는 사람이 이겨요.
+		
+		처음에 성냥개비 갯수를 입력받구요, [30 - 500]
+		가져갈 성냥 갯수를 입력받습니다.
+
+		성냥은 하나부터 열한개깨지 가져갈 수 있다고 할게요.
+	*)
+
+	(*
+	 	note 3.
+
+		숫자들의 의미대치표.
+
+		30500			=  " 성냥개비 갯수를 알고싶어요. 30부터 500까지 숫자중에 하나를 입력해주세요. "
+		119112114		=  " 한 게임 더 하시겠습니까? "
+		7777777			=  " 축하합니다. 승리하셨습니다. -_ㅠ "
+		4444			=  " You Lose. 하지만 드라군이 출동하면 어떨까? "
+		409058			=  " 담에봐요 빠이빠이. /~ "
+	*)
+
+*)
+
+
+let minGat := 30 in
+let maxGat := 501 in (* which means maximum 500 *)
+let max := 12 in
+let randGen := 7 in
+let seed := 3 in
+let isFirst := true in
+while (
+	let
+		terminateGame := 1
+	in (
+		(* Query : 119112114 = Play Another Game? *)
+		(* { zeroOrLess = quit, oneOrMore = continue } *)
+		 (if (not isFirst) then (
+		 	 (write 119112114)
+			;(read terminateGame)
+		 ) else ())
+		;(not (terminateGame < 1))
+	)
+)
+do (
+	let whoseTurn := 1 in
+	let
+		matchLeft := 0 
+	in (
+		(* Query : 30500 = Please input the Number of match at the very beginning *)
+		 (isFirst := false)
+		;(let localLoop := true in (
+			 (while localLoop do (
+				 (write 30500)
+			  	;(read matchLeft)
+				;(localLoop := false)
+				;(if (matchLeft < minGat) then (localLoop := true) else ())
+				;(if (not (matchLeft < maxGat)) then (localLoop := true) else ())
+			 ))
+		 ))
+		;(let div2 := matchLeft / 2 in (
+			 (if (matchLeft = (div2 * 2)) then (
+				 (seed := seed * (matchLeft + 1))
+			  )
+			  else (
+				 (seed := seed * matchLeft)
+			 ))
+		 ))
+
+		(* ;(write 409058) (* debug code *) *)
+		;(while (not (matchLeft < 1)) do (
+			(* whoseTurn { 0 = human, 1 = computer } *)
+			 (whoseTurn := 1 - whoseTurn)
+			;(let howMuch := 0 in (
+				 (let localLoop := true in (
+					 (while localLoop do (
+						 (write matchLeft)
+						;(if (0 = whoseTurn) then (
+							 (read howMuch)
+						  )
+						  else (
+							 (if (matchLeft < max) then (
+								 (howMuch := matchLeft)
+							  )
+							  else (
+								 (seed := (
+									 (let gop := seed * randGen in (
+										 (let mok := gop / (max - 1) in (
+											 (let nam := (gop - (mok * (max - 1))) in (
+												 (nam + 1)
+											 ))
+										 ))
+									 ))
+								 ))
+								(* ;(write 409058) (* debug code *) *)
+								(* ;(while (not (seed < max)) do (seed := seed - max)) *)
+								;(howMuch := seed)
+								;(write howMuch)
+							 ))
+						 ))
+						;(localLoop := false)
+						;(if (howMuch < 1) then (localLoop := true) else ())
+						;(if (not (howMuch < max)) then (localLoop := true) else ())
+					 ))
+				 ))
+				;(matchLeft := matchLeft - howMuch)
+			 ))
+		 ))
+		;(write 0) (* which means [write matchLeft] *)
+		;(if (0 = whoseTurn) then (
+			 (write 7777777)
+		  )
+		  else (
+			 (write 4444)
+		 ))
+	)
+)
+;(write 409058)
+
+
+(* EOF *)
+
+(* 위의 K- 프로그램을 K--에서 parsing할 수 있도록 약간의 수정을 했습니다. - dreameye - *)
