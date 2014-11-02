@@ -1,0 +1,152 @@
+   0  $accept : %entry% $end
+
+   1  program : exp EOF
+
+   2  exp : ID
+   3      | LAMBDA ID DOT exp
+   4      | LP exp RP
+   5      | exp exp
+
+   6  %entry% : '\001' program
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . program  (6)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	.  error
+
+	program  goto 6
+	exp  goto 7
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	exp : LAMBDA . ID DOT exp  (3)
+
+	ID  shift 8
+	.  error
+
+
+state 4
+	exp : ID .  (2)
+
+	.  reduce 2
+
+
+state 5
+	exp : LP . exp RP  (4)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	.  error
+
+	exp  goto 9
+
+
+state 6
+	%entry% : '\001' program .  (6)
+
+	.  reduce 6
+
+
+state 7
+	program : exp . EOF  (1)
+	exp : exp . exp  (5)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	EOF  shift 10
+	.  error
+
+	exp  goto 11
+
+
+state 8
+	exp : LAMBDA ID . DOT exp  (3)
+
+	DOT  shift 12
+	.  error
+
+
+state 9
+	exp : LP exp . RP  (4)
+	exp : exp . exp  (5)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	RP  shift 13
+	.  error
+
+	exp  goto 11
+
+
+state 10
+	program : exp EOF .  (1)
+
+	.  reduce 1
+
+
+state 11
+	exp : exp . exp  (5)
+	exp : exp exp .  (5)
+
+	LAMBDA  shift 3
+	ID  reduce 5
+	LP  reduce 5
+	RP  reduce 5
+	EOF  reduce 5
+
+	exp  goto 11
+
+
+state 12
+	exp : LAMBDA ID DOT . exp  (3)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	.  error
+
+	exp  goto 14
+
+
+state 13
+	exp : LP exp RP .  (4)
+
+	.  reduce 4
+
+
+state 14
+	exp : LAMBDA ID DOT exp .  (3)
+	exp : exp . exp  (5)
+
+	LAMBDA  shift 3
+	ID  shift 4
+	LP  shift 5
+	RP  reduce 3
+	EOF  reduce 3
+
+	exp  goto 11
+
+
+10 terminals, 4 nonterminals
+7 grammar rules, 15 states

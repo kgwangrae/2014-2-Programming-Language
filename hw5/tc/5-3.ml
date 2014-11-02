@@ -1,147 +1,26 @@
-[Header]
-
-open HW
-open Lambda
-
-type nexp = NId of int
-          | NLam of int * nexp
-          | NApp of nexp * nexp
-
-
-let normalize e = 
-    let count = ref 0 in
-    let newN () = count := !count + 1; !count in
-
-    let rec iter e env = 
-        match e with
-        | Id str ->            
-            let n = try List.assoc str env with Not_found -> newN () in
-            (NId n)
-
-        | Lam (x, e') ->
-            let n = newN() in
-            let ne = iter e' ((x, n)::env) in
-            NLam(n, ne)
-
-        | App (e1, e2) ->            
-            NApp(iter e1 env, iter e2 env)
-    in
-    iter e []
-
-let equal p1 p2 =
-    (normalize p1) = (normalize p2)
-
-let makePgm str = 
-    let lexbuf = Lexing.from_string str in
-    Parser.program Lexer.start lexbuf
-
-
-let test inputStr expectStr =
-    let pgm = makePgm inputStr in
-    let expectPGM = makePgm expectStr in
-    equal (HW.reduce pgm) expectPGM
-
-
-[Test]
-test "\\x.x" "\\x.x"
-
-[Value]
-true
-
-
-[Test]
-test "(\\x.x) x" "x"
-
-[Value]
-true
-
-
-[Test]
-test "x (\\y.y)" "x (\\y.y)"
-
-[Value]
-true
-
-
-[Test]
-test "(\\x.(\\y.y) z) k" "z"
-
-[Value]
-true
-
-[Test]
-test "((\\x.y) ((\\x.(x x)) (\\x.(x x))))" "y"
-
-[Value]
-true
-
- 
-[Test]
-test "(\\y.(\\x.(y (((\\s.(\\z.z)) y) x))))" "\\y.(\\x.(y x))"
-
-[Value]
-true
-
-
-[Test]
-test "((\\x.((\\x.(\\y.((y x) x))) x)) z)" "(\\y.((y z) z))"
-
-[Value]
-true
-
-[Test]
-test "(\\y.(\\z.((\\x.(x y))(\\x.x z)))x)(\\x.x x)" "x x"
-
-[Value]
-true
-
-[Test]
-test "((\\y.((\\x.x x)((\\x.x x)((\\x.x x)y))))(\\x.x)) z" "z"
-
-[Value]
-true
-
-
-[Test]
-test "((\\y.((\\x.y x)((\\x.y x)((\\x.y x)y))))(\\x.x)) z" "z"
-
-[Value]
-true
-
-
-[Test]
-test "(\\x.(\\y.(((\\x.x) (\\x.(y x))) (\\x.x))))" "(\\x.(\\y.(y (\\x.x))))"
-
-[Value]
-true
-
-
-
-[Test]
-test "((\\y.(\\z.((\\x.(x y)) (\\x.x z))) x) (\\x.(\\y.y x))) (\\x. x)" "x"
-
-[Value]
-true
-
-
-
-[Test]
-test "((((\\x.(\\x.(\\x.((y (\\x.((z x) x))) z)))) x) y) z)" "(((y (\\x.((z x) x))) z))"
-
-[Value]
-true
-
-
-
-[Test]
-test "(((\\x.\\y.\\z.((z((x y) z))(x y)))(\\x.\\y.y))(\\x.\\x.x))(\\z.x z)" "(x (\\z.(x z))) (\\y.y)"
-
-[Value]
-true
-
-
-[Test]
-test "(\\a.\\b.b) ((\\x.x x) (\\x.x x))" "\\b.b"
-
-[Value]
-true
+﻿*문제 : 새 이름 짓기 규칙이 어떻게 되는가?
+1.l : \x.(\z.(x z)) z ---> \v.(z v) : ok (새 이름 / 결과 괄호..는 맞음 \v.(z) (v)로 나오네 ㅡㅡ)
+2.l : \x.x" "\x.x") ok
+3.l : (\x.x) x" "x") ok
+4.l : x (\y.y)" "x (\y.y)") ok
+5.l : (\x.(\y.y) z) k" "z") ok
+((\x.y) ( (\x.(x x)) (\x.(x x)) ) )" "y") --> 무한루프! (안 넣을 예정??)
+6.l : (\y.(\x.(y (((\s.(\z.z)) y) x)))) " "\y.(\x.(y x))") : ok (결과괄호 ..?)
+7.l : (\x.x(x a)) (\x.x(x a)) -> ((a) ((a) (a))) (((a) ((a) (a))) (a)) : ok
+8.l : ((\x.x) z)(y) --> (z) (y) : ok
+9.l : (\u0.(\u1.(\u0.(u0 u1 u2)) (u0 x z))) --> \u0.\u1.((((u0) (x)) (z)) (u1)) (u2) : ok 
+10.l : (\u0.(\u1.(\u0.(u0 u1 u2)) (u0 x z))) o --> \u1.((((o) (x)) (z)) (u1)) (u2) : ok
+11.l : (\u0.(\u1.(\u0.(u0 u1 u2)) (u0 x z))) o u --> ((((o) (x)) (z)) (u)) (u2) : ok
+12.l : ((\u0.(\u1.(\u0.(u0 u1 u2)) (u0 x z))) u1) --> \u3.((((u1) (x)) (z)) (u3)) (u2) : ok 새 이름 
+13.l : ((\u0.(\u1.(\u0.(u0 u1 u2)) (u0 x z))) u1) u0 --> ((((u1) (x)) (z)) (u0)) (u2) : ok
+((\x.x)(\x.z))((\x.x x x)(\x.x x x)) --> z --> 무한루프
+14.l : ((\x.((\x.(\y.((y x) x))) x)) z) " "(\y.((y z) z))") : ok
+15.l : (\y.(\z.((\x.(x y))(\x.x z)))x)(\x.x x) " "x x") : ok
+16.l : ((\y.((\x.x x)((\x.x x)((\x.x x)y))))(\x.x)) z " "z") : ok
+17.l : ((\y.((\x.y x)((\x.y x)((\x.y x)y))))(\x.x)) z " "z") : ok
+18.l : (\x.(\y.(((\x.x) (\x.(y x))) (\x.x)))) " "(\x.(\y.(y (\x.x))))") : ok 
+19.l : ((\y.(\z.((\x.(x y)) (\x.x z))) x) (\x.(\y.y x))) (\x. x) " "x") : ok
+20.l : ((((\x.(\x.(\x.((y (\x.((z x) x))) z)))) x) y) z) " "(((y (\x.((z x) x))) z))") : ok 새 이름
+21.l : " (((\x.\y.\z.((z((x y) z))(x y)))(\x.\y.y))(\x.\x.x))(\z.x z) " 
+	"(x (\z.(x z))) (\y.y)" : ok 새 이름
+무한루프 (\a.\b.b) ((\x.x x) (\x.x x))" "\b.b")
