@@ -1,0 +1,8 @@
+s4
+f(x) = if x then x else f(x); f(true) 
+(\x. (\rest.\arg.(arg arg rest)) (x x)) (\x. (\rest.\arg.(arg arg rest)) (x x)) (\x.\y.x) 
+
+	\x.\y x 남음
+
+s5
+\x.\y.(x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) ((x) (y))))))))))))))))))))) 

@@ -394,12 +394,11 @@ module K : KMINUS =
 				| _ -> raise (Error "type error"))
 			
 		| FOR(id,e1,e2,e3) ->
-			let loc = env_loc env id in
 			let (mem',v1) = eval mem env e1 in
 			let (mem'',v2) = eval mem' env e2 in
 			let n1 = value_int v1 in
 			let n2 = value_int v2 in
-				evalfor loc n1 n2 mem'' env e3
+				evalfor id n1 n2 mem'' env e3
 		| LETV(id,e1,e2) ->
 			let (mem',v) = eval mem env e1 in
 			let	(loc,mem'') = Mem.alloc mem' in
@@ -431,12 +430,13 @@ module K : KMINUS =
 				(mem',v)
 
 	(* for-loop evaluation procedure *)
-	and evalfor loc n1 n2 mem env e =
+	and evalfor id n1 n2 mem env e =
 		if n1 > n2 then (mem, Unit)
 		else 
+        let loc = env_loc env id in
 		let mem' = Mem.store mem loc (Num(n1)) in
 		let (mem'',v) = eval mem' env e in
-			evalfor loc (n1+1) (n2) mem'' env e
+			evalfor id (n1+1) (n2) mem'' env e
 
 	(* operation evaluation procedure *)
 	and evalop mem env op e1 e2 =

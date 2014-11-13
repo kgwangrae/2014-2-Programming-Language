@@ -1,0 +1,22 @@
+*How to check : execute each program with and without -k option.
+*If you get the same answer all the time, then everything may get correctly translated.
+1) 13
+2) 1 *** K- may raise an exception for this
+3) 3
+4) 3
+5) 55
+6) 5(newline)13(newline)5(newline)13
+7) 220
+8) 3
+9) 56
+10) 5
+11) 3(newline)3
+12) (read 3)3(read 5)5(read 0)
+13) 6
+14) 18
+15) 110
+16) 7
+17) 15
+18) 4
+19) 9
+20) 170

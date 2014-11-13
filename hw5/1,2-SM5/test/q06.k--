@@ -1,0 +1,17 @@
+(* FOR loop *)
+
+let xx := 1; xy := 1; t := 1; z := 1 in
+for z := 1 to 5 do (
+  t := xy;
+  xy := xx + xy;
+  xx := t
+);
+(write (z));
+(write (xy));
+for z := 66 to 1 do (
+  t := xy;
+  xy := xx + xy;
+  xx := t
+);
+(write (z));
+(write (xy))

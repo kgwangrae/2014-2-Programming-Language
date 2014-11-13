@@ -1,0 +1,53 @@
+Some tests require your input
+FILE : result1
+
+FILE : result2
+
+FILE : test-old.sh
+
+FILE : test.sh
+
+FILE : test001.l
+=============
+input program
+=============
+\x.\y.\z.(((((x) (y)) ((y) (z))) (\x.x)) (\x.x)) (\x.x)
+
+
+============
+output program
+=============
+\x.\y.\z.(((((x) (y)) ((y) (z))) (\x.x)) (\x.x)) (\x.x)
+FILE : test002.l
+=============
+input program
+=============
+\s.\z.(s) (z)
+
+
+============
+output program
+=============
+\s.\z.(s) (z)
+FILE : test003.l
+=============
+input program
+=============
+\x.\y.\z.(x) (\q.\w.\r.t)
+
+
+============
+output program
+=============
+\x.\y.\z.(x) (\q.\w.\r.t)
+FILE : test004.l
+=============
+input program
+=============
+(\x.\x.x) (y)
+
+
+============
+output program
+=============
+\a#b3.a#b3

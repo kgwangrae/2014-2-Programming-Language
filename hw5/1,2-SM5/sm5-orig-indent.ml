@@ -41,141 +41,23 @@ module Sm5 : SM5 =
    and environment = map list
    and command = cmd list
    and continuation = (command * environment) list
-  
+
+
    exception GC_Failure
    exception RunError of stack * memory * environment * command * continuation
    exception Unbound_id of string
    exception Unbound_loc of int * int
    exception End
-   exception UnknownError of string 
 
    let empty_command = []
 
    let (@?) l x = snd (List.find (fun y -> x = fst y) l)
    let fsts l = List.map fst l 
-   
-   (* Memory implementation using Hashtable : location (loc) -> validity (bool)
-    * Actual binding information is stored as a list of (loc,value)*)
-   let mem_used = ref 0
-   let mem_size = 128
-   let offset = 0
-   let mark_mem = Hashtbl.create mem_size
-   let marked_some_loc = ref false
+   let rec rangecheck l r1 r2 =
+      match l with
+      [] -> true
+      | h::tl -> ((r1 @? h) = (r2 @? h)) && (rangecheck tl r1 r2)
 
-   (* Remove invalid entries, reset valid entries' validity and build new memory list*)
-   let clear : memory -> memory = fun old_mem ->
-     let checker : loc -> bool -> memory -> memory = fun loc is_valid new_mem ->
-       if (is_valid)  
-       then 
-        try ((loc,(old_mem @? loc))::new_mem)
-        with Not_found -> new_mem (*Valid location, but not binded with any value yet*)
-       else 
-         (let _ = (Hashtbl.remove mark_mem loc) in new_mem)
-     in
-     let resetter : loc -> bool -> unit = fun loc is_valid ->
-       (Hashtbl.replace mark_mem loc false)
-     in
-     let new_mem = Hashtbl.fold checker mark_mem []
-     in
-     let _ = Hashtbl.iter resetter mark_mem
-     in
-     let _ = (mem_used := Hashtbl.length mark_mem)
-     in
-     new_mem
-   
-   let mark_loc : loc -> unit = fun loc -> 
-     if (Hashtbl.find mark_mem loc) then ()
-     else
-       let _ = (marked_some_loc := true) 
-       in 
-       Hashtbl.replace mark_mem loc true
-
-   (*Procedures below should be called only when the given parameter itself is reachable*)
-   
-   let rec probe_rec : record -> unit = fun r ->
-     match r with 
-     | (_,(V (L l)))::t -> (mark_loc l);(probe_rec t)
-     | [] -> ()
-     | _ -> raise (UnknownError "Invalid record containing non-loc value") 
-
-   let probe_val : value -> unit = fun v -> 
-     match v with
-     | L l -> mark_loc l
-     | R r -> probe_rec r
-     | _ -> ()
-   
-   (* This should be called at last - when almost all locations have been tested for validity*)
-   let rec probe_mem : memory -> unit = fun m -> 
-     let rec probe_mem_once : memory -> unit = fun mem -> 
-       match mem with
-       | (l, v)::t -> (if (Hashtbl.find mark_mem l) then probe_val v else ());(probe_mem_once t)
-       | [] -> ()
-     in
-     let _ = probe_mem_once m
-     in
-     if (not (!marked_some_loc)) then () (*Base case : nothing was changed*) 
-     else ((marked_some_loc := false);probe_mem m)
-   
-   let rec probe_env : environment -> unit = fun env ->
-     match env with
-     (*NOTE environment definition in this sm5 interpreter is somewhat strange*)
-     | (_,(V (L l)))::t -> (mark_loc l);(probe_env t)
-     | (_,(P (_,_,e_in)))::t -> (probe_env e_in);(probe_env t)
-       (*NOTE e_in doesn't have P itself by definition, so there's no risk of infinite loop*)
-     | [] -> ()
-     | _ -> raise (UnknownError "Invalid environment")
-
-   let rec probe_cont : continuation -> unit = fun cont ->
-     match cont with
-     | (_,env)::t -> (probe_env env);(probe_cont t)
-     | [] -> ()
-   
-   let rec probe_svalue : svalue -> unit = fun sv -> 
-     match sv with
-     | V v -> probe_val v
-     | P (_,_,e) -> probe_env e
-     | M (_, sv_in) -> probe_svalue sv_in
-     (*
-      * | M (_,(V(L l))) -> mark_loc l
-      * | _ -> raise (UnknownError "Invalid svalue")*)
-   
-   let rec probe_stk : stack -> unit = fun stk -> 
-     match stk with
-     | h::t -> (probe_svalue h);(probe_stk t)
-     | [] -> ()
-
-   let gc : (stack * memory * environment * continuation) -> memory = fun (s,m,e,k) ->
-     (probe_stk s);(probe_env e);(probe_cont k);(probe_mem m);(clear m) 
-
-   (*NOTE : allocation itself is not always followed by binding*)
-   let malloc : (stack * memory * environment * continuation) -> (memory * loc) = fun (s,m,e,k) -> 
-     let rec get_free_loc : int -> loc = fun i ->
-       if (Hashtbl.mem mark_mem (i,offset))
-       then (get_free_loc (i+1))
-       else (
-         let _ = Hashtbl.add mark_mem (i,offset) false (*Set default as invalid*)
-         in
-         (i,offset)
-       )
-     in
-     if (!mem_used < mem_size) 
-     then ( 
-       let _ = (mem_used := !mem_used + 1)
-       in
-       (m, get_free_loc 0)
-     )
-     else ( (* no more space : GC required *)
-       let new_mem = gc (s,m,e,k)
-       in
-       if (!mem_used < mem_size)
-       then (
-         let _ = (mem_used := !mem_used + 1)
-         in
-         (new_mem, get_free_loc 0) 
-       )
-       else raise GC_Failure
-     )
-   
     open Format
 
     let rec print_seq f g l =
@@ -233,7 +115,11 @@ module Sm5 : SM5 =
       printf "@]";
       print_flush()
 
+    let loccount = ref 0
+        (* create new loc *)
+    let newl () = loccount := !loccount + 1; (!loccount,0)
 
+    (* @? 이거 뭐야 *)
     let rec eval (s,m,e,c,k) = 
       eval(
         match (s,m,e,c,k) with
@@ -249,10 +135,7 @@ module Sm5 : SM5 =
              (try (V(m @? l)::s, m, e, c, k)
               with Not_found -> 
                 let (l1, l2) = l in raise (Unbound_loc (l1, l2)))
-         | (_,_,_,MALLOC::c,_) ->
-             let (new_mem, new_loc) = malloc (s,m,e,k) 
-             in
-             (V(L(new_loc))::s, new_mem, e, c, k)
+         | (_,_,_,MALLOC::c,_) -> (V(L(newl()))::s, m, e, c, k)
          
          (*Conditional Branch*)
          | (V(B b)::s,_,_,JTR(c1,c2)::c,_) -> 
