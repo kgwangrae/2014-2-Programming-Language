@@ -1,0 +1,39 @@
+1¹: 1, 2, 2
+2¹: 2
+3¹: 4
+4¹: 3
+5¹: 15
+6¹: 6
+7¹: 5
+8¹: 3
+9¹: 680
+10¹: 55
+11 : 4, 10, 55, 1
+12 : 
+(* 
+ input x, z -> output x^2^n smaller than or equal to z 
+ ex ) 
+5 
+1000 
+-> 
+5 
+25 
+625 
+*)
+13 : false
+14 : (* input x, then x is printed, 
+		  but immediately RE(unprintable) is raised *) 
+	*) 
+15 : (* sum of two inputs *)
+16 : 1000
+17 : 7
+18: input * 2 times -> then Error
+19 : input -> echo input 2 times
+20 : 1,1
+21 : (* result 
+		true 
+		false 
+		2 *) 
+*) 
+22 : 4
+23 : fib(10) : 55

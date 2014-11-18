@@ -1,0 +1,10 @@
+
+let x := unit in
+let y := unit in
+let z := unit in
+(
+    read x;
+    read y;
+    read z;
+    write ((write x) + (write y) * (write z))
+)

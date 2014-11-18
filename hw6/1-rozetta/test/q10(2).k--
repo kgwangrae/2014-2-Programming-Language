@@ -1,0 +1,5 @@
+let x := 0 in 
+let y := 0 in 
+let proc f(x) = (x := x + 1) in 
+let z := f(x) in 
+write f<z>

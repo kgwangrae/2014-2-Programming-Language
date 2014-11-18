@@ -1,0 +1,8 @@
+let x := 0 in 
+let y := 0 in 
+let proc f(x) = x + y in 
+(
+    read x;
+    read y;
+    write f(x)
+)

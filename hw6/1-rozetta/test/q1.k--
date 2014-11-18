@@ -1,0 +1,6 @@
+let proc f(x) = (x := 2) in 
+let z := 1 in 
+(
+    f(z);
+    write z
+)

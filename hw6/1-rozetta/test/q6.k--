@@ -1,0 +1,12 @@
+let k := 5 in 
+let proc f(x) = 
+    if x = 1 then 
+        1 
+    else 
+    (
+        let y := x - 1 in 
+	x * (f<y>) 
+    ) 
+in 
+
+write f<k>

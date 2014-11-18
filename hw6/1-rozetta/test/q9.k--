@@ -1,0 +1,14 @@
+let x := 2 in
+(
+    (
+        let x := 3 in
+        let x := 4 in
+        let proc f (x) = (x := 5) in
+    
+        x := 5;
+        f(x);
+        f<x>;
+        write x
+    );
+    write x
+)

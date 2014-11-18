@@ -1,0 +1,14 @@
+let x := 5 in 
+let proc f(a) = 
+    let proc g(b) = 
+        if a < b then 
+            a 
+        else 
+        (
+            b := 7;
+	    b
+        ) 
+    in     
+    g<x> 
+in 
+write f(10)
