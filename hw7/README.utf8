@@ -1,0 +1,62 @@
+SNU 4190.310 Programming Languages (Fall 2012)
+
+저지방 M
+
+컴파일 및 실행 방법
+===================
+[UNIX]
+
+  1. make
+  2. run examples/sort.m
+
+[WINDOWS]
+  
+  1. make.bat
+  2. run.exe examples\sort.m
+
+ * run -pp examples/sort.m 와 같이 하면 파싱된 구문구조를 확인할 수 있습니다. 
+
+ * run -poly examples/sort.m 처럼 -poly 옵션을 주면 주어진 M 프로그램을 hw7_2.ml의
+   M_PolyChecker.check으로 타입 검사를 한 뒤에 M_LowFat.run으로 돌립니다.
+   -poly를 주지 않으면, 주어진 M 프로그램을 hw7_1.ml의
+   M_SimChecker.check으로 타입 검사를 한 뒤에 M_LowFat.run으로 돌립니다.
+
+ * 실행시, 파일명을 명시하지 않을 경우, 표준입력으로부터 실행코드를 읽어들입니다.
+   표준 입력으로 프로그램을 입력하신 후, 첫 번째 칸(column)에서
+   유닉스 머신에서는 Ctrl-D, 윈도우 환경에서는 Ctrl-Z를 누르시면 
+   프로그램이 실행됩니다.
+
+
+숙제 제출 방법
+==============
+
+ * hw7_1.ml의 M_SimChecker.check 및 M_LowFat.run 함수를 정의를 완성하고,
+   hw7_2.ml의 M_PolyChecker.check 함수를 완성해서
+   hw7_1.ml과 hw7_2.ml 파일을 제출합니다.
+   
+ * M.RuntimeError는 M_LowFat.run에서만, 
+   M.TypeError는 M_SimChecker.check M_PolyChecker.check에서만 내야 합니다.
+
+
+참고 사항
+=========
+
+ * m.ml에 M의 문법 및 타입, 실행기, 타입검사기, 구문구조 출력 등의 
+   정의가 모여있으니 한 번쯤 살펴보는 것이 좋겠습니다.
+
+ * 타입 오류나 실행 오류가 발생한 경우, 그 이유를 설명하는 적절한
+   메시지를 예외에 포함시키면 좋습니다.
+
+
+--
+신재호 <netj@ropas.snu.ac.kr>
+김덕환 <dk@ropas.snu.ac.kr>
+오학주 <pronto@ropas.snu.ac.kr>
+박대준 <pudrife@ropas.snu.ac.kr>
+이희종 <ihji@ropas.snu.ac.kr>
+최원태 <wtchoi@ropas.snu.ac.kr>
+허기홍 <khheo@ropas.snu.ac.kr>
+김희정 <hjkim@ropas.snu.ac.kr>
+조성근 <skcho@ropas.snu.ac.kr>
+장수원 <swjang@ropas.snu.ac.kr>
+이승중 <sjlee@ropas.snu.ac.kr>

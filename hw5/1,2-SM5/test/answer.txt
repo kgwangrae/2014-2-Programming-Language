@@ -20,3 +20,5 @@
 18) 4
 19) 9
 20) 170
+21) 100 times of "1\n" (This is for GC test - should work with very small amount of memory)
+22) 100
